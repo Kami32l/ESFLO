@@ -32,10 +32,10 @@ class FlightSearch:
         code = 0
         try:
             r = requests.get(url=endpoint, params=parameters, headers=headers)
-            print("status code get_location_code:", r.status_code)
+            # print("status code get_location_code:", r.status_code)
             data = r.json()
-            print(r.url)
-            print(data)
+            # print(r.url)
+            # print(data)
             status = 1
             try:
                 code = data['locations'][0]['code']
@@ -43,7 +43,7 @@ class FlightSearch:
                 code = 0
         except requests.exceptions.ConnectionError:
             # TODO no connection window
-            print("no internet connection")
+            # print("no internet connection")
             status = 0
 
         # print(code)
@@ -94,7 +94,7 @@ class FlightSearch:
             status = 1
         except requests.exceptions.ConnectionError:
             # TODO no connection window
-            print("no internet connection")
+            # print("no internet connection")
             data = []
             status = 0
 
