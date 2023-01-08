@@ -139,5 +139,5 @@ class FlightData:
         found_flight, status_code = FlightSearch().check_flights(fly_from=fly_from, fly_to=fly_to, date_from=date_from,
                                                     date_to=date_to, price_to=price_to, adults=adults)
 
-        print("Results loc flight_data.py filter_from_user_input():", found_flight)
+        # print("Results loc flight_data.py filter_from_user_input():", found_flight)
         return found_flight, status_code
