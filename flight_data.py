@@ -115,7 +115,7 @@ class FlightData:
 
             results.append(found_flight)
 
-        print("Results loc flight_data.py filter_from_database():", results)
+        # print("Results loc flight_data.py filter_from_database():", results)
         return results, status_code
 
     def filter_from_user_input(self, city, fly_to, fly_from, days_range, price_to, adults):
