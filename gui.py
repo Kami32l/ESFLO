@@ -1,17 +1,9 @@
-# do zrobienia
-# na gorze stronu zawsze dostepne przechodzenie miedzy menu
-# 0. TODO I. Menu wyboru wyszukanie (+ funkcja zapisu do usera)/II. logowanie user - odczyt
-# 1. TODO II. Wyszukaj lot wedlug zapisanych danych
-# 2. TODO II. Wpisywanie danych lotu
-# 2. TODO Zapisz kryteria lotu uzytkownika
-# 3. TODO Pokaz dane lotu
-#    TODO SET BACKGROUND IMAGE
+# TODO optymalizacja
 
 from tkinter import *
 from password_hashing import hash_password
 from data_manager_local_database import DatabaseManager
 from tkinter import messagebox
-from filtering import PrepareDataToSearch
 from flight_data import FlightData
 from scrollable_frame import ScrollbarFrame
 from flight_search import FlightSearch
@@ -30,7 +22,7 @@ class GUI:
 
     def main_window(self):
         """
-        Generates main window.
+        Generates main window with login screen and 3 buttons.
         :return:
         """
 
@@ -56,6 +48,10 @@ class GUI:
 
         # functions
         def login():
+            """
+            Takes care of zaloguj/wczytaj button. Verifies user provided email and password. Calls flight_show method.
+            :return:
+            """
             # login function checks email and password
             email_check = email.get()
             password_check = password.get()
@@ -80,26 +76,30 @@ class GUI:
 
             # when password and email provided are in the database if not = display warning message
             if check_count == 2:
-                record_in_database = False
-                returned_results = DatabaseManager().search_database('Email', email_check)  # searches database
+
+                returned_results = DatabaseManager().search_database('Email', self.user_email, 'Password',
+                                                                     self.user_password)  # searches database
                 print("returned_results", returned_results)
-                flights = []
-                links = []
-                for index, row in returned_results.iterrows():
-                    print("index, row", index, row)
-                    if row['Password'] == self.user_password and row['Email'] == self.user_email:   # checks if password matches email in the database
-                        record_in_database = True
 
-                if record_in_database:
-                    print("returned_results", returned_results)
-                    results = PrepareDataToSearch().filter_from_database(returned_results)  # znalezione loty raw
-                    for i in range(0, len(results)):  # iterates through found flights
-                        formatted_data, link = FlightData().format_data(results[i])  # formatowanie danych lotów
-                        flights.append(formatted_data)
-                        links.append(link)
+                if not returned_results.empty:
+                    flights = []
+                    links = []
+                    for index, row in returned_results.iterrows():
+                        print("index, row", index, row)
 
-                    # print(formatted_data)
-                    self.flight_show(flights, links)
+                        results, status_code = FlightData().filter_from_database(returned_results)  # znalezione loty raw
+                        if status_code == 0:
+                            error = "No connection! Can't find flights."
+                            messagebox.showerror("Error", error)
+                            break
+                        else:
+                            for i in range(0, len(results)):  # iterates through found flights
+                                formatted_data, link = FlightData().format_data(results[i])  # formatowanie danych lotów
+                                flights.append(formatted_data)
+                                links.append(link)
+
+                            # print(formatted_data)
+                            self.flight_show(flights, links)
 
                 else:
                     warn = "Provided credentials incorrect."
@@ -110,7 +110,9 @@ class GUI:
         frame.pack(expand=False)
 
         # labels
-        Label(frame, text="Menu Główne", bg="#00CD33", fg="#000", font=("Calibri", "24", "bold")).grid(row=0, columnspan=3, pady=10)
+        Label(frame, text="Menu Główne", bg="#00CD33", fg="#000", font=("Calibri", "24", "bold")).grid(row=0,
+                                                                                                       columnspan=3,
+                                                                                                       pady=10)
         Label(frame, text='Adres Email', bg="#00CD33", fg="#000", font=("Calibri", "14")).grid(row=3, column=0, pady=5)
         Label(frame, text='Hasło', bg="#00CD33", fg="#000", font=("Calibri", "14")).grid(row=4, column=0, pady=5)
 
@@ -138,10 +140,9 @@ class GUI:
 
         ws.mainloop()
 
-
     def flight_show(self, data, link):
         """
-        Starts window which shows found flights.
+        Starts window which show found flights.
         :param data: flight data
         :param link: link for a flight
         """
@@ -191,7 +192,7 @@ class GUI:
         buttons_frame.grid(column=0, row=0)
 
         # labels
-        Label(label_frame, text="Znalezione loty", bg="#00CD33", fg="#000", font=("Calibri", "24", "bold"))\
+        Label(label_frame, text="Znalezione loty", bg="#00CD33", fg="#000", font=("Calibri", "24", "bold")) \
             .grid(row=0, columnspan=3)
 
         # text
@@ -219,7 +220,6 @@ class GUI:
             link_box.insert('end', message)
             link_box['state'] = 'disabled'
 
-
         # Button
         ext = Button(buttons_frame, text="WYJDŹ", padx=20, pady=10, relief=SOLID, font=("Calibri", "14", "bold"),
                      command=lambda: ws.destroy())
@@ -227,10 +227,9 @@ class GUI:
 
         ws.mainloop()
 
-
     def flight_search(self):
         """
-        Starts window which shows window where you can search for flight.
+        Starts window where you can search for a flight and save filters.
         :return:
         """
 
@@ -259,6 +258,12 @@ class GUI:
 
         # functions
         def get_entries():
+            """
+            Read entries and returns True if all entry boxes filled correctly.
+            :return iata_depart_check: city of departure IATA code
+            :return iata_arr_check: city of arrival IATA code
+            """
+
             city_depart_check = city_depart.get()
             iata_depart_check = iata_depart.get()
             city_arr_check = city_arr.get()
@@ -277,14 +282,18 @@ class GUI:
             else:
                 if iata_depart_check == "":
                     # get iata code if not provided, gives warning if no city iata found
-                    iata_depart_check = f.get_location_code(city_depart_check)
-                    print("iata_depart_check:", iata_depart_check)
-                    if iata_depart_check != 0:
-                        check_count += 1
+                    iata_depart_check, status_code = f.get_location_code(city_depart_check)
+                    if status_code == 0:
+                        error = "No connection! Can't find the departure city."
+                        messagebox.showerror("Error", error)
                     else:
-                        warn = "City of departure not found!"
-                        messagebox.showwarning("Warning", warn)
-                else: #TODO A SMALL FIX - IDIOT PROOF IT
+                        print("iata_depart_check:", iata_depart_check)
+                        if iata_depart_check != 0:
+                            check_count += 1
+                        else:
+                            warn = "City of departure not found!"
+                            messagebox.showwarning("Warning", warn)
+                else:  # TODO A SMALL FIX - IDIOT PROOF IT
                     check_count += 1
 
             if city_arr_check == "":
@@ -293,14 +302,18 @@ class GUI:
             else:
                 if iata_arr_check == "":
                     # get iata code if not provided, gives warning if no city iata found
-                    iata_arr_check = f.get_location_code(city_arr_check)
+                    iata_arr_check, status_code = f.get_location_code(city_arr_check)
                     print("iata_arr_check:", iata_arr_check)
-                    if iata_arr_check != 0:
-                        check_count += 1
+                    if status_code == 0:
+                        error = "No connection! Can't find the arrival city."
+                        messagebox.showerror("Error", error)
                     else:
-                        warn = "City of arrival not found!"
-                        messagebox.showwarning("Warning", warn)
-                else: #TODO A SMALL FIX - IDIOT PROOF IT
+                        if iata_arr_check != 0:
+                            check_count += 1
+                        else:
+                            warn = "City of arrival not found!"
+                            messagebox.showwarning("Warning", warn)
+                else:  # TODO A SMALL FIX - IDIOT PROOF IT
                     check_count += 1
 
             if max_price_check == "":
@@ -326,14 +339,17 @@ class GUI:
                 return False, iata_depart_check, iata_arr_check
 
         def save_filters():
-            #TODO
+            """
+            Save user defined flight search filter.
+            :return:
+            """
+
             # if email in database check password
             # if password correct save as new entry
             # else password incorrect show warning
             # else email not in database save as a new entry
 
             # save filters to a database
-
 
             # get user input
             email_check = email.get()
@@ -360,12 +376,12 @@ class GUI:
             # when password and email provided are in the database if not = display warning message
             if check_count == 2:
                 record_in_database = False
-                returned_results = DatabaseManager().search_database('Email', email_check)  # searches database
+                returned_results = DatabaseManager().search_database_one('Email', self.user_email)  # searches database
                 print("returned results nad  not in", returned_results)
                 print("self. user email:", self.user_email)
                 # if email not in database:
                 if returned_results.empty:
-                    #TODO add a new record to database with email, hashed password and all other needed data
+                    # TODO add a new record to database with email, hashed password and all other needed data
                     print("email not in database")
 
                     city_depart_check = city_depart.get()
@@ -377,19 +393,18 @@ class GUI:
                     check_count, iata_depart_check, iata_arr_check = get_entries()
 
                     if check_count:
-                        #save to a database
+                        # save to a database
 
                         td = DateData(int(days_count_check))
                         next_date = td.next_date
 
                         dbM = DatabaseManager()
                         dbM.update_file(email=self.user_email, password=self.user_password,
-                                                      city=city_arr_check, iata=iata_arr_check,
-                                                      maxprice=max_price_check, dep_city=city_depart_check,
-                                                      dep_iata=iata_depart_check, people=num_of_passengers_check,
-                                                      days_range=days_count_check, next_date=next_date)
+                                        city=city_arr_check, iata=iata_arr_check,
+                                        maxprice=max_price_check, dep_city=city_depart_check,
+                                        dep_iata=iata_depart_check, people=num_of_passengers_check,
+                                        days_range=days_count_check, next_date=next_date)
                         dbM.save_data_to_file()
-
 
                         info = "Successfully created new entry."
                         messagebox.showinfo("Info", info)
@@ -398,7 +413,6 @@ class GUI:
                         warn = "Not all boxes filled correctly."
                         messagebox.showwarning("Warning", warn)
 
-                #TODO
                 # if email is in database:
                 # if password matches email in the database:
                 # add a new record to database with email, hashed password and all other needed data
@@ -409,8 +423,6 @@ class GUI:
 
                 else:
                     print("email in database")
-                    flights = []
-                    links = []
                     for index, row in returned_results.iterrows():
                         print("index, row", index, row)
                         if row['Password'] == self.user_password and row[
@@ -418,9 +430,8 @@ class GUI:
                             record_in_database = True
                             print("password matches email")
 
-
                     if record_in_database:
-                        #TODO add a new record to database with email, hashed password and all other needed data
+                        # TODO add a new record to database with email, hashed password and all other needed data
                         print("email not in database")
 
                         city_depart_check = city_depart.get()
@@ -440,10 +451,10 @@ class GUI:
                             dbM = DatabaseManager()
 
                             dbM.update_file(email=self.user_email, password=self.user_password,
-                                                          city=city_arr_check, iata=iata_arr_check,
-                                                          maxprice=max_price_check, dep_city=city_depart_check,
-                                                          dep_iata=iata_depart_check, people=num_of_passengers_check,
-                                                          days_range=days_count_check, next_date=next_date)
+                                            city=city_arr_check, iata=iata_arr_check,
+                                            maxprice=max_price_check, dep_city=city_depart_check,
+                                            dep_iata=iata_depart_check, people=num_of_passengers_check,
+                                            days_range=days_count_check, next_date=next_date)
                             dbM.save_data_to_file()
 
                             info = "Successfully saved"
@@ -458,7 +469,9 @@ class GUI:
                         messagebox.showwarning("Warning", warn)
 
         def clr():
-            # clear entries boxes
+            """
+            Clear Entry boxes.
+            """
             city_depart.delete(0, END)
             iata_depart.delete(0, END)
             city_arr.delete(0, END)
@@ -468,6 +481,10 @@ class GUI:
             num_of_passengers.delete(0, END)
 
         def search():
+            """
+            Read entry boxes, check if correct. Prepare data to and search for a flight.
+            :return:
+            """
             # read from entries
             city_depart_check = city_depart.get()
             city_arr_check = city_arr.get()
@@ -480,9 +497,11 @@ class GUI:
             # if all necessary data received (check count = True) do:
             if check_count:
                 # prepare received data and search for flight
-                results = PrepareDataToSearch().filter_from_user_input(city=city_arr_check, fly_to=iata_arr_check,
-                        fly_from=iata_depart_check, days_range=days_count_check, price_to=max_price_check,
-                        adults=num_of_passengers_check)  # znalezione loty raw
+                results, status_code = FlightData().filter_from_user_input(city=city_arr_check, fly_to=iata_arr_check,
+                                                                       fly_from=iata_depart_check,
+                                                                       days_range=days_count_check,
+                                                                       price_to=max_price_check,
+                                                                       adults=num_of_passengers_check)  # znalezione loty raw
                 print("results: ", results)
                 # formats, filters received flight data
                 formatted_data, link = FlightData().format_data(results)
@@ -490,7 +509,8 @@ class GUI:
                 print("formatted data, link: ", formatted_data, link)
                 # print(formatted_data)
                 # passes the flight data to show in the window
-                self.flight_show(formatted_data_list, link) # formatted_data needs to be an list to propely show flight in text box
+                self.flight_show(formatted_data_list,
+                                 link)  # formatted_data needs to be an list to properly show flight in text box
 
             else:
                 warn = "Not all boxes filled correctly."
@@ -581,6 +601,5 @@ class GUI:
         save_filters_button.grid(row=1, column=2, padx=5)
 
         ws.mainloop()
-
 
 # g = GUI()
