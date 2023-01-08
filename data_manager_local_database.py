@@ -7,7 +7,7 @@ class DatabaseManager:
     """
 
     def __init__(self):
-        self.file_name = 'database.tegst'
+        self.file_name = 'database.csv'
         self.read_file()
 
     def read_file(self):
