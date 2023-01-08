@@ -1,5 +1,6 @@
 import tkinter as tk
 
+
 class ScrollbarFrame(tk.Frame):
     """
     Extends class tk.Frame to support a scrollable Frame
@@ -30,5 +31,7 @@ class ScrollbarFrame(tk.Frame):
         self.scrolled_frame.bind("<Configure>", self.on_configure)
 
     def on_configure(self, event):
-        """Set the scroll region to encompass the scrolled frame"""
+        """
+        Set the scroll region to encompass the scrolled frame
+        """
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
