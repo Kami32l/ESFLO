@@ -13,6 +13,9 @@ THEME_COLOR = "#00CD33"
 
 
 class GUI:
+    """
+    Class with graphical user interface made with Tkinter. Most of the programme in here.
+    """
 
     def __init__(self):
         self.user_email = ""
