@@ -35,3 +35,4 @@ class ScrollbarFrame(tk.Frame):
         Set the scroll region to encompass the scrolled frame
         """
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+    
