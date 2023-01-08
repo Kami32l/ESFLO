@@ -1,6 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
+from flight_search import FlightSearch
 
 load_dotenv("C:\\Users\\T430\\python\\EnvironmentVariables\\.env")
 SHEETY_CO_AUTHORIZATION = os.getenv("SHEETY_CO_AUTHORIZATION2")
@@ -9,7 +10,7 @@ SHEETY_CO_SHEET_ENDPOINT = os.getenv("SHEETY_CO_SHEET_ENDPOINT")
 
 class DataManager:
     """
-    This class is responsible for talking to the Google Sheet using SHEETY.CO API.
+    OBSOLETE. This class is responsible for talking to the Google Sheet using SHEETY.CO API.
     """
     def __init__(self):
         pass
@@ -51,3 +52,13 @@ class DataManager:
         r = requests.post(url=endpoint, json=parameters, headers=headers)
         # print(r.text)
         # print(r.url)
+
+    def add_city(self):
+        pass
+        """
+        Asks user for city. Gets IATA code for the city using class using kiwi API.
+        """
+        city = input("City: ")
+        price = input("Lowest price: ")
+        iata = FlightSearch().get_location_code(city)
+        self.add_row(city, iata, price,)
