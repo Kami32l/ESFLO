@@ -79,15 +79,16 @@ class GUI:
 
                 returned_results = DatabaseManager().search_database('Email', self.user_email, 'Password',
                                                                      self.user_password)  # searches database
-                print("returned_results", returned_results)
+                # print("returned_results", returned_results)
 
                 if not returned_results.empty:
                     flights = []
                     links = []
                     for index, row in returned_results.iterrows():
-                        print("index, row", index, row)
+                        # print("index, row", index, row)
 
-                        results, status_code = FlightData().filter_from_database(returned_results)  # znalezione loty raw
+                        results, status_code = FlightData().filter_from_database(
+                            returned_results)  # znalezione loty raw
                         if status_code == 0:
                             error = "No connection! Can't find flights."
                             messagebox.showerror("Error", error)
@@ -287,7 +288,7 @@ class GUI:
                         error = "No connection! Can't find the departure city."
                         messagebox.showerror("Error", error)
                     else:
-                        print("iata_depart_check:", iata_depart_check)
+                        # print("iata_depart_check:", iata_depart_check)
                         if iata_depart_check != 0:
                             check_count += 1
                         else:
@@ -303,7 +304,7 @@ class GUI:
                 if iata_arr_check == "":
                     # get iata code if not provided, gives warning if no city iata found
                     iata_arr_check, status_code = f.get_location_code(city_arr_check)
-                    print("iata_arr_check:", iata_arr_check)
+                    # print("iata_arr_check:", iata_arr_check)
                     if status_code == 0:
                         error = "No connection! Can't find the arrival city."
                         messagebox.showerror("Error", error)
@@ -377,12 +378,12 @@ class GUI:
             if check_count == 2:
                 record_in_database = False
                 returned_results = DatabaseManager().search_database_one('Email', self.user_email)  # searches database
-                print("returned results nad  not in", returned_results)
-                print("self. user email:", self.user_email)
+                # print("returned results nad  not in", returned_results)
+                # print("self. user email:", self.user_email)
                 # if email not in database:
                 if returned_results.empty:
                     # TODO add a new record to database with email, hashed password and all other needed data
-                    print("email not in database")
+                    # print("email not in database")
 
                     city_depart_check = city_depart.get()
                     city_arr_check = city_arr.get()
@@ -422,17 +423,17 @@ class GUI:
                 # add a new record to database with email, hashed password and all other needed data
 
                 else:
-                    print("email in database")
+                    # print("email in database")
                     for index, row in returned_results.iterrows():
-                        print("index, row", index, row)
+                        # print("index, row", index, row)
                         if row['Password'] == self.user_password and row[
-                            'Email'] == self.user_email:  # checks if password matches email in the database
+                               'Email'] == self.user_email:  # checks if password matches email in the database
                             record_in_database = True
-                            print("password matches email")
+                            # print("password matches email")
 
                     if record_in_database:
                         # TODO add a new record to database with email, hashed password and all other needed data
-                        print("email not in database")
+                        # print("email not in database")
 
                         city_depart_check = city_depart.get()
                         city_arr_check = city_arr.get()
@@ -486,7 +487,6 @@ class GUI:
             :return:
             """
             # read from entries
-            city_depart_check = city_depart.get()
             city_arr_check = city_arr.get()
             max_price_check = max_price.get()
             days_count_check = days_count.get()
@@ -498,15 +498,15 @@ class GUI:
             if check_count:
                 # prepare received data and search for flight
                 results, status_code = FlightData().filter_from_user_input(city=city_arr_check, fly_to=iata_arr_check,
-                                                                       fly_from=iata_depart_check,
-                                                                       days_range=days_count_check,
-                                                                       price_to=max_price_check,
-                                                                       adults=num_of_passengers_check)  # znalezione loty raw
-                print("results: ", results)
+                                                                           fly_from=iata_depart_check,
+                                                                           days_range=days_count_check,
+                                                                           price_to=max_price_check,
+                                                                           adults=num_of_passengers_check)  # znalezione loty raw
+                # print("results: ", results)
                 # formats, filters received flight data
                 formatted_data, link = FlightData().format_data(results)
                 formatted_data_list = [formatted_data]
-                print("formatted data, link: ", formatted_data, link)
+                # print("formatted data, link: ", formatted_data, link)
                 # print(formatted_data)
                 # passes the flight data to show in the window
                 self.flight_show(formatted_data_list,
@@ -601,5 +601,4 @@ class GUI:
         save_filters_button.grid(row=1, column=2, padx=5)
 
         ws.mainloop()
-
-# g = GUI()
+        
