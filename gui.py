@@ -32,22 +32,22 @@ class GUI:
         WINDOW_WIDTH = 600
         WINDOW_HEIGHT = 300
 
-        ws = Tk()
-        ws.title("Flight Deals Search Tool - Main Menu")
+        mw = Tk()
+        mw.title("Flight Deals Search Tool - Main Menu")
 
         # get the screen dimension
-        screen_width = ws.winfo_screenwidth()
-        screen_height = ws.winfo_screenheight()
+        screen_width = mw.winfo_screenwidth()
+        screen_height = mw.winfo_screenheight()
 
         # find the center point
         center_x = int(screen_width / 2 - WINDOW_WIDTH / 2)
         center_y = int(screen_height / 2 - WINDOW_HEIGHT / 2)
 
         # set the position of the window to the center of the screen
-        ws.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
+        mw.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
 
         # set background color
-        ws.config(bg="#00CD33")
+        mw.config(bg="#00CD33")
 
         # functions
         def login():
@@ -110,7 +110,7 @@ class GUI:
                     messagebox.showwarning("Warning", warn)
 
         # frames
-        frame = Frame(ws, padx=20, pady=20, bg="#00CD33")
+        frame = Frame(mw, padx=20, pady=20, bg="#00CD33")
         frame.pack(expand=False)
 
         # labels
@@ -135,14 +135,14 @@ class GUI:
                      font=("Calibri", "14", "bold"), command=login)
 
         ext = Button(frame, text="WYJDŹ", padx=20, pady=21, relief=SOLID,
-                     font=("Calibri", "14", "bold"), command=lambda: ws.destroy())
+                     font=("Calibri", "14", "bold"), command=lambda: mw.destroy())
 
         # button positioning
         clr.grid(row=6, column=0, pady=20)
         reg.grid(row=6, column=1, pady=20)
         ext.grid(row=6, column=2, pady=20)
 
-        ws.mainloop()
+        mw.mainloop()
 
     def flight_show(self, data, link):
         """
@@ -153,43 +153,43 @@ class GUI:
         WINDOW_WIDTH = 600
         WINDOW_HEIGHT = 600
 
-        ws = Tk()
-        ws.title('Flight Deals Search Tool - Flights')
-        ws.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
+        fsh = Tk()
+        fsh.title('Flight Deals Search Tool - Flights')
+        fsh.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
         # set background color
-        ws.config(bg="#00CD33")
+        fsh.config(bg="#00CD33")
 
         # get the screen dimension
-        screen_width = ws.winfo_screenwidth()
-        screen_height = ws.winfo_screenheight()
+        screen_width = fsh.winfo_screenwidth()
+        screen_height = fsh.winfo_screenheight()
 
         # find the center point
         center_x = int(screen_width / 2 - WINDOW_WIDTH / 2)
         center_y = int(screen_height / 2 - WINDOW_HEIGHT / 2)
 
         # set the position of the window to the center of the screen
-        ws.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
+        fsh.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
 
         # functions
 
         # frames
         # scrollable frame (for text boxes)
-        sbf = ScrollbarFrame(ws)
-        ws.grid_rowconfigure(0, weight=1)
-        ws.grid_columnconfigure(0, weight=1)
+        sbf = ScrollbarFrame(fsh)
+        fsh.grid_rowconfigure(0, weight=1)
+        fsh.grid_columnconfigure(0, weight=1)
         sbf.configure(background="#00CD33")
         sbf.grid(row=1, column=0, sticky='nsew')
         scrollable_frame = sbf.scrolled_frame
 
-        main_frame_top = Frame(ws, padx=20, pady=0, bg="#00CD33")
+        main_frame_top = Frame(fsh, padx=20, pady=0, bg="#00CD33")
         main_frame_top.grid(column=0, row=0)
         # main_frame_top.pack(expand=True)
 
         label_frame = Frame(main_frame_top, padx=20, pady=0, bg="#00CD33")
         label_frame.grid(column=0, row=0)
 
-        main_frame_bottom = Frame(ws, padx=20, pady=60, bg="#00CD33")
+        main_frame_bottom = Frame(fsh, padx=20, pady=60, bg="#00CD33")
         main_frame_bottom.grid(column=0, row=2)
 
         buttons_frame = Frame(main_frame_bottom, padx=20, pady=0, bg="#00CD33")
@@ -226,10 +226,10 @@ class GUI:
 
         # Button
         ext = Button(buttons_frame, text="WYJDŹ", padx=20, pady=10, relief=SOLID, font=("Calibri", "14", "bold"),
-                     command=lambda: ws.destroy())
+                     command=lambda: fsh.destroy())
         ext.grid()
 
-        ws.mainloop()
+        fsh.mainloop()
 
     def flight_search(self):
         """
@@ -237,28 +237,28 @@ class GUI:
         :return:
         """
 
-        ws = Tk()
-        ws.title('Flight Deals Search Tool - Search Flights')
-        ws.geometry('500x400')
-        ws.config(bg="#00CD33")
-        # ws.attributes('-fullscreen', True)
+        fse = Tk()
+        fse.title('Flight Deals Search Tool - Search Flights')
+        fse.geometry('500x400')
+        fse.config(bg="#00CD33")
+        # fse.attributes('-fullscreen', True)
 
         WINDOW_WIDTH = 600
         WINDOW_HEIGHT = 600
 
         # get the screen dimension
-        screen_width = ws.winfo_screenwidth()
-        screen_height = ws.winfo_screenheight()
+        screen_width = fse.winfo_screenwidth()
+        screen_height = fse.winfo_screenheight()
 
         # find the center point
         center_x = int(screen_width / 2 - WINDOW_WIDTH / 2)
         center_y = int(screen_height / 2 - WINDOW_HEIGHT / 2)
 
         # set the position of the window to the center of the screen
-        ws.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
+        fse.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{center_x}+{center_y}')
 
         # set background color
-        ws.config(bg="#00CD33")
+        fse.config(bg="#00CD33")
 
         # functions
         def get_entries():
@@ -282,37 +282,37 @@ class GUI:
             f = FlightSearch()
             if city_depart_check == "":
                 warn = "City of departure can't be empty!"
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 if iata_depart_check == "":
                     # get iata code if not provided, gives warning if no city iata found
                     iata_depart_check, status_code = f.get_location_code(city_depart_check)
                     if status_code == 0:
                         error = "No connection! Can't find the departure city."
-                        messagebox.showerror("Error", error)
+                        messagebox.showerror(master=fse, title="Error", message=error)
                     else:
                         # print("iata_depart_check:", iata_depart_check)
                         if iata_depart_check != 0:
                             check_count += 1
                         else:
                             warn = "City of departure not found!"
-                            messagebox.showwarning("Warning", warn)
+                            messagebox.showwarning(master=fse, title="Warning", message=warn)
                 else:
                     # If iata given by user search using api and check if it is correct and returns city
                     name, status_code = FlightSearch().get_location_name(iata_depart_check)
                     if status_code == 0:
                         error = "No connection! Can't find the departure city."
-                        messagebox.showerror("Error", error)
+                        messagebox.showerror(master=fse, title="Error", message=error)
                     else:
                         if name == 0:
                             warn = "City matching departure IATA code not found!"
-                            messagebox.showwarning("Warning", warn)
+                            messagebox.showwarning(master=fse, title="Warning", message=warn)
                         else:
                             check_count += 1
 
             if city_arr_check == "":
                 warn = "City of arrival can't be empty!"
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 if iata_arr_check == "":
                     # get iata code if not provided, gives warning if no city iata found
@@ -320,58 +320,58 @@ class GUI:
                     # print("iata_arr_check:", iata_arr_check)
                     if status_code == 0:
                         error = "No connection! Can't find the arrival city."
-                        messagebox.showerror("Error", error)
+                        messagebox.showerror(master=fse, title="Error", message=error)
                     else:
                         if iata_arr_check != 0:
                             check_count += 1
                         else:
                             warn = "City of arrival not found!"
-                            messagebox.showwarning("Warning", warn)
+                            messagebox.showwarning(master=fse, title="Warning", message=warn)
                 else:
                     # If iata given by user search using api and check if it is correct and returns city
                     name, status_code = FlightSearch().get_location_name(iata_arr_check)
                     if status_code == 0:
                         error = "No connection! Can't find the arrival city."
-                        messagebox.showerror("Error", error)
+                        messagebox.showerror(master=fse, title="Error", message=error)
                     else:
                         if name == 0:
                             warn = "City matching arrival IATA code not found!"
-                            messagebox.showwarning("Warning", warn)
+                            messagebox.showwarning(master=fse, title="Warning", message=warn)
                         else:
                             check_count += 1
 
             if max_price_check == "":
                 warn = "Price can't be empty!"
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 try:
                     max_price_check = int(max_price_check)
                     check_count += 1
                 except ValueError:
                     warn = "Price has to be a number."
-                    messagebox.showwarning("Warning", warn)
+                    messagebox.showwarning(master=fse, title="Warning", message=warn)
 
             if days_count_check == "":
                 warn = "Number of days can't be empty."
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 try:
                     days_count_check = int(days_count_check)
                     check_count += 1
                 except ValueError:
                     warn = "Range of days has to be a number."
-                    messagebox.showwarning("Warning", warn)
+                    messagebox.showwarning(master=fse, title="Warning", message=warn)
 
             if num_of_passengers_check == "":
                 warn = "Number of passengers can't be empty."
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 try:
                     num_of_passengers_check = int(num_of_passengers_check)
                     check_count += 1
                 except ValueError:
                     warn = "Number of passengers has to be a number."
-                    messagebox.showwarning("Warning", warn)
+                    messagebox.showwarning(master=fse, title="Warning", message=warn)
 
             # if all necessary data received (check count = 5) do:
             if check_count == 5:
@@ -401,7 +401,7 @@ class GUI:
             # checks if provided email field not empty if it is show warning
             if email_check == "":
                 warn = "Email can't be empty!"
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 check_count += 1
                 self.user_email = email_check
@@ -409,7 +409,7 @@ class GUI:
             # checks if password field empty, if not hashes password
             if password_check == "":
                 warn = "Password can't be empty!"
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
             else:
                 check_count += 1
                 self.user_password = hash_password(password_check)
@@ -446,11 +446,11 @@ class GUI:
                         dbM.save_data_to_file()
 
                         info = "Successfully created new entry."
-                        messagebox.showinfo("Info", info)
+                        messagebox.showinfo(master=fse, title="Info", message=info)
 
                     else:
                         warn = "Not all boxes filled correctly."
-                        messagebox.showwarning("Warning", warn)
+                        messagebox.showwarning(master=fse, title="Warning", message=warn)
 
                 # if email is in database:
                 # if password matches email in the database:
@@ -496,15 +496,15 @@ class GUI:
                             dbM.save_data_to_file()
 
                             info = "Successfully saved"
-                            messagebox.showinfo("Info", info)
+                            messagebox.showinfo(master=fse, title="Info", message=info)
 
                         else:
                             warn = "Not all boxes filled correctly."
-                            messagebox.showwarning("Warning", warn)
+                            messagebox.showwarning(master=fse, title="Warning", message=warn)
 
                     else:
                         warn = "Provided credentials incorrect."
-                        messagebox.showwarning("Warning", warn)
+                        messagebox.showwarning(master=fse, title="Warning", message=warn)
 
         def clr():
             """
@@ -552,13 +552,13 @@ class GUI:
 
             else:
                 warn = "Not all boxes filled correctly."
-                messagebox.showwarning("Warning", warn)
+                messagebox.showwarning(master=fse, title="Warning", message=warn)
 
         # frames
-        frame = Frame(ws, padx=20, pady=20)
+        frame = Frame(fse, padx=20, pady=20)
         frame.pack(expand=True)
 
-        main_frame = Frame(ws, padx=20, pady=20, bg="#00CD33")
+        main_frame = Frame(fse, padx=20, pady=20, bg="#00CD33")
         main_frame.pack(expand=True)
 
         title_frame = Frame(main_frame, padx=20, pady=20, bg="#00CD33")
@@ -627,7 +627,7 @@ class GUI:
         reg = Button(buttons_frame, text="WYSZUKAJ", padx=20, pady=10, relief=SOLID, font=("Calibri", "14", "bold"),
                      command=search)
         ext = Button(buttons_frame, text="WYJDŹ", padx=20, pady=10, relief=SOLID, font=("Calibri", "14", "bold"),
-                     command=lambda: ws.destroy())
+                     command=lambda: fse.destroy())
 
         clr.grid(row=6, column=0, pady=20, padx=5)
         reg.grid(row=6, column=1, pady=20, padx=5)
@@ -638,5 +638,5 @@ class GUI:
                                      font=("Calibri", "10", "bold"), command=save_filters)
         save_filters_button.grid(row=1, column=2, padx=5)
 
-        ws.mainloop()
+        fse.mainloop()
         
