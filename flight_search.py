@@ -74,7 +74,7 @@ class FlightSearch:
             # print(data)
             status = 1
             try:
-                print(data)
+                # print(data)
                 city_name = data['locations'][0]['name']
             except IndexError:
                 city_name = 0
