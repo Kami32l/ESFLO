@@ -49,6 +49,43 @@ class FlightSearch:
         # print(code)
         return code, status
 
+    def get_location_name(self, iata_code):
+        """
+        Gets IATA code for the specified city using Twillio API
+        :param iata_code: city name
+        :return city_name: city iata code
+        :return status: 0 - no connection, 1 - connection available.
+        """
+        headers = {
+            "apikey": KIWI_API_KEY,
+        }
+        parameters = {
+            "term": iata_code,
+            "locale": "en-EN",
+            "location_types": "city",
+        }
+        endpoint = "https://tequila-api.kiwi.com/locations/query"
+        code = 0
+        try:
+            r = requests.get(url=endpoint, params=parameters, headers=headers)
+            # print("status code get_location_code:", r.status_code)
+            data = r.json()
+            # print(r.url)
+            # print(data)
+            status = 1
+            try:
+                print(data)
+                city_name = data['locations'][0]['name']
+            except IndexError:
+                city_name = 0
+        except requests.exceptions.ConnectionError:
+            # TODO no connection window
+            # print("no internet connection")
+            status = 0
+
+        # print(code)
+        return city_name, status
+
     def check_flights(self, fly_from, fly_to, date_from, date_to, price_to, adults=1, max_stopovers=3,
                       max_fly_duration=18, **kwargs):
         """
@@ -93,7 +130,6 @@ class FlightSearch:
             data = r.json()
             status = 1
         except requests.exceptions.ConnectionError:
-            # TODO no connection window
             # print("no internet connection")
             data = []
             status = 0

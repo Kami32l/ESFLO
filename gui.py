@@ -297,8 +297,18 @@ class GUI:
                         else:
                             warn = "City of departure not found!"
                             messagebox.showwarning("Warning", warn)
-                else:  # TODO A SMALL FIX - IDIOT PROOF IT
-                    check_count += 1
+                else:
+                    # If iata given by user search using api and check if it is correct and returns city
+                    name, status_code = FlightSearch().get_location_name(iata_depart_check)
+                    if status_code == 0:
+                        error = "No connection! Can't find the departure city."
+                        messagebox.showerror("Error", error)
+                    else:
+                        if name == 0:
+                            warn = "City matching departure IATA code not found!"
+                            messagebox.showwarning("Warning", warn)
+                        else:
+                            check_count += 1
 
             if city_arr_check == "":
                 warn = "City of arrival can't be empty!"
@@ -317,24 +327,51 @@ class GUI:
                         else:
                             warn = "City of arrival not found!"
                             messagebox.showwarning("Warning", warn)
-                else:  # TODO A SMALL FIX - IDIOT PROOF IT
-                    check_count += 1
+                else:
+                    # If iata given by user search using api and check if it is correct and returns city
+                    name, status_code = FlightSearch().get_location_name(iata_arr_check)
+                    if status_code == 0:
+                        error = "No connection! Can't find the arrival city."
+                        messagebox.showerror("Error", error)
+                    else:
+                        if name == 0:
+                            warn = "City matching arrival IATA code not found!"
+                            messagebox.showwarning("Warning", warn)
+                        else:
+                            check_count += 1
 
             if max_price_check == "":
                 warn = "Price can't be empty!"
                 messagebox.showwarning("Warning", warn)
             else:
-                check_count += 1
+                try:
+                    max_price_check = int(max_price_check)
+                    check_count += 1
+                except ValueError:
+                    warn = "Price has to be a number."
+                    messagebox.showwarning("Warning", warn)
+
             if days_count_check == "":
-                warn = "Number of days can't be empty"
+                warn = "Number of days can't be empty."
                 messagebox.showwarning("Warning", warn)
             else:
-                check_count += 1
+                try:
+                    days_count_check = int(days_count_check)
+                    check_count += 1
+                except ValueError:
+                    warn = "Range of days has to be a number."
+                    messagebox.showwarning("Warning", warn)
+
             if num_of_passengers_check == "":
-                warn = "Number of passengers can't be empty"
+                warn = "Number of passengers can't be empty."
                 messagebox.showwarning("Warning", warn)
             else:
-                check_count += 1
+                try:
+                    num_of_passengers_check = int(num_of_passengers_check)
+                    check_count += 1
+                except ValueError:
+                    warn = "Number of passengers has to be a number."
+                    messagebox.showwarning("Warning", warn)
 
             # if all necessary data received (check count = 5) do:
             if check_count == 5:
@@ -385,23 +422,21 @@ class GUI:
                 # print("self. user email:", self.user_email)
                 # if email not in database:
                 if returned_results.empty:
-                    # TODO add a new record to database with email, hashed password and all other needed data
-                    # print("email not in database")
-
-                    city_depart_check = city_depart.get()
-                    city_arr_check = city_arr.get()
-                    max_price_check = max_price.get()
-                    days_count_check = days_count.get()
-                    num_of_passengers_check = num_of_passengers.get()
-
+                    # read entries
                     check_count, iata_depart_check, iata_arr_check = get_entries()
 
                     if check_count:
-                        # save to a database
+                        # read rest of entries
+                        city_depart_check = city_depart.get()
+                        city_arr_check = city_arr.get()
+                        max_price_check = int(max_price.get())
+                        days_count_check = int(days_count.get())
+                        num_of_passengers_check = int(num_of_passengers.get())
 
                         td = DateData(int(days_count_check))
                         next_date = td.next_date
 
+                        # save to a database
                         dbM = DatabaseManager()
                         dbM.update_file(email=self.user_email, password=self.user_password,
                                         city=city_arr_check, iata=iata_arr_check,
@@ -435,18 +470,17 @@ class GUI:
                             # print("password matches email")
 
                     if record_in_database:
-                        # TODO add a new record to database with email, hashed password and all other needed data
-                        # print("email not in database")
-
-                        city_depart_check = city_depart.get()
-                        city_arr_check = city_arr.get()
-                        max_price_check = max_price.get()
-                        days_count_check = days_count.get()
-                        num_of_passengers_check = num_of_passengers.get()
-
+                        # read entries
                         check_count, iata_depart_check, iata_arr_check = get_entries()
 
                         if check_count:
+                            # read the rest of entries
+                            city_depart_check = city_depart.get()
+                            city_arr_check = city_arr.get()
+                            max_price_check = int(max_price.get())
+                            days_count_check = int(days_count.get())
+                            num_of_passengers_check = int(num_of_passengers.get())
+
                             # save to a database
 
                             td = DateData(int(days_count_check))
@@ -490,15 +524,16 @@ class GUI:
             :return:
             """
             # read from entries
-            city_arr_check = city_arr.get()
-            max_price_check = max_price.get()
-            days_count_check = days_count.get()
-            num_of_passengers_check = num_of_passengers.get()
-
             check_count, iata_depart_check, iata_arr_check = get_entries()
 
             # if all necessary data received (check count = True) do:
             if check_count:
+                # read rest of entries
+                city_arr_check = city_arr.get()
+                max_price_check = int(max_price.get())
+                days_count_check = int(days_count.get())
+                num_of_passengers_check = int(num_of_passengers.get())
+
                 # prepare received data and search for flight
                 results, status_code = FlightData().filter_from_user_input(city=city_arr_check, fly_to=iata_arr_check,
                                                                            fly_from=iata_depart_check,
